@@ -6,6 +6,37 @@ result_path = {'people': './result/people/result',  # 分类存储路径
                'others': './result/others/result'}
 
 
+def body_detection(image):
+    # 创建一个级联分类器 加载一个.xml分类器文件 它既可以是Haar特征也可以是LBP特征的分类器
+    body_detecter = cv.CascadeClassifier(
+        r'./haarcascades/haarcascade_fullbody.xml')
+    # 多个尺度空间进行人脸检测   返回检测到的人脸区域坐标信息
+    body = body_detecter.detectMultiScale(
+        image=image, scaleFactor=1.1, minNeighbors=5)
+
+    if body == ():
+        print("未检测到身体")
+        return 0
+    else:
+        print('检测身体信息信息如下:\n', body)
+        return 1
+
+
+def eye_detection(image):
+    # 创建一个级联分类器 加载一个.xml分类器文件 它既可以是Haar特征也可以是LBP特征的分类器
+    eye_detecter = cv.CascadeClassifier(
+        r'./haarcascades/haarcascade_eye_tree_eyeglasses.xml')
+    # 多个尺度空间进行人脸检测   返回检测到的人脸区域坐标信息
+    eye = eye_detecter.detectMultiScale(
+        image=image, scaleFactor=1.1, minNeighbors=5)
+
+    if eye == ():
+        return body_detection(image)
+    else:
+        print('检测身体信息信息如下:\n', eye)
+        return 1
+
+
 def face_detection(image):
     # 创建一个级联分类器 加载一个.xml分类器文件 它既可以是Haar特征也可以是LBP特征的分类器
     face_detecter = cv.CascadeClassifier(
@@ -15,10 +46,10 @@ def face_detection(image):
         image=image, scaleFactor=1.1, minNeighbors=5)
 
     if faces == ():
-        print("未检测到")
-        return 0
+        print('未检测到人脸\n')
+        return body_detection(image)
     else:
-        print('检测信息如下:\n', faces)
+        print('检测人脸信息如下:\n', faces)
         return 1
 
 
@@ -38,7 +69,6 @@ def run():
             b = b+1
 
     # k = cv.waitKey(0) & 0xFF  # 等待键盘响应（64位计算机）
-
     # cv.destroyAllWindows()  # 销毁所有窗口
 
 
